@@ -4,6 +4,7 @@
 #include "menu.h"
 #include "lib/lcd/hd44780.h"
 #include "clock.h"
+#include "adc.h"
 
 void prepareMenu(){	
 	mainMenuList = (MenuItem*)malloc(sizeof(MenuItem));		//circular list
@@ -16,14 +17,20 @@ void prepareMenu(){
 	menu1->id = 1;
 	menu1->delayBetweenRefreshInMillis = 1000;
 	
+	MenuItem* menu2 = (MenuItem*)malloc(sizeof(MenuItem));
+	menu2->id = 2;
+	menu2->delayBetweenRefreshInMillis = 1000;
+	
 	menu0->nextMenu = menu1;	
-	menu1->nextMenu = menu0;		
+	menu1->nextMenu = menu2;	
+	menu2->nextMenu = menu0;	
 	mainMenuList = menu0;
 }
 
 void printTitles(int id){
 	uint8_t sec,min,hour,day,month,year,weekday;
 	char title1[16]="",title2[16]="";
+	float volt;
 	switch (id){
 		case 0:
 			lcd_clrscr();
@@ -41,6 +48,13 @@ void printTitles(int id){
 			lcd_puts("Data: ");
 			sprintf(title2, "%u:%u:%u", day,month,year);
 			lcd_puts(title2);
+			break;
+		case 2:
+			volt = measureADC();
+			sprintf(title1, "Volt: %.2f V", volt);
+			lcd_clrscr();
+			lcd_goto(0x00);
+			lcd_puts(title1);		
 			break;
 	}
 	

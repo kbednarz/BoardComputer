@@ -10,6 +10,7 @@
 #include "menu.h"
 #include "buttons_controller.h"
 #include "clock.h"
+#include "adc.h"
 
 int main(void)
 {
@@ -19,7 +20,7 @@ int main(void)
 	
 	initClock();
 	writeClock(11,22,2,4,16,1);
-	
+	initAdc();
 	prepareButtons();
 	prepareMenu();
 	printTitles(mainMenuList->id);
