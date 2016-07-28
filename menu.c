@@ -31,9 +31,9 @@ void printTitles(int id){
 			lcd_puts(title1);
 			break;
 		case 1:
-			lcd_clrscr();
 			readClock(&sec,&min,&hour,&day,&month,&year,&weekday);
 			sprintf(title1, "%u:%u:%u", sec,min,hour);
+			lcd_clrscr();
 			lcd_goto(0x00);
 			lcd_puts("Godz. ");
 			lcd_puts(title1);
