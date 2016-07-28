@@ -1,7 +1,9 @@
 #ifndef HD44780_SETTINGS_H
 #define HD44780_SETTINGS_H
 
+#ifndef F_CPU
 #define F_CPU                    1000000UL     // Set Clock Frequency
+#endif
 
 #define USE_ADELAY_LIBRARY       0           // Set to 1 to use my ADELAY library, 0 to use internal delay functions
 #define LCD_BITS                 4           // 4 for 4 Bit I/O Mode, 8 for 8 Bit I/O Mode

@@ -1,39 +1,51 @@
-/*
- * BoardComputer.c
- *
- * Created: 2016-07-26 12:47:15
- * Author : Kamil
- */ 
+#ifndef F_CPU
 #define F_CPU 1000000UL
+#endif
+
 
 #include <avr/io.h>
 #include <util/delay.h>
 #include <stdio.h>
 #include "lib/lcd/hd44780.h"
+#include "menu.h"
+#include "buttons_controller.h"
 #include "clock.h"
-
 
 int main(void)
 {
-	uint8_t sec,min,hour,day,month,year,weekday;
+	
     lcd_init();
     lcd_clrscr();
-    
+	
+	initClock();
 	writeClock(11,22,2,4,16,1);
-	char secString[16],dateString[16];
-    while (1) 
-    {
-		readClock(&sec,&min,&hour,&day,&month,&year,&weekday);
-		lcd_clrscr();
-		lcd_goto(0x00);
-		lcd_puts("smh: ");
-		sprintf(secString, "%u:%u:%u", sec,min,hour);
-		lcd_puts(secString);
-		lcd_goto(0x40);
-		lcd_puts("dmy: ");
-		sprintf(dateString, "%u:%u:%u", day,month,year);
-		lcd_puts(dateString);
-		_delay_ms(1000);
-    }
+	
+	prepareButtons();
+	prepareMenu();
+	printTitles(mainMenuList->id);
+	int status, delay10ms=0;
+	while (1)
+	{
+		status = isClickedShortOrLong();
+		if(status == 1){		//if pressed short
+			mainMenuList = mainMenuList->nextMenu;
+			printTitles(mainMenuList->id);
+		} else if(status == 2)
+		{	
+			lcd_clrscr();
+			lcd_goto(0x00);
+			lcd_puts("LONG");
+		} 
+		else if(mainMenuList->delayBetweenRefreshInMillis >=0){
+			if(delay10ms <= (mainMenuList->delayBetweenRefreshInMillis)/10) {
+				delay10ms++;
+				_delay_ms(10);
+			} else{
+				printTitles(mainMenuList->id);
+				delay10ms=0;
+			}
+		}
+		
+	}
 }
 

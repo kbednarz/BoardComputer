@@ -12,17 +12,19 @@
 
 uint8_t decToBcd(uint8_t val)
 {
-	return ( (val/10*16) + (val%10) );
+	return ( ((val/10)<<4) + (val%10) );
 }
 
 uint8_t bcdToDec(uint8_t val)
 {
-	return( (val/16*10) + (val%16) );
+	return( ((val>>4)*10) + (val%16) );
 }
 
+void initClock(){
+	i2c_init();
+}
 
 void readClock(uint8_t* sec, uint8_t* min, uint8_t* hour, uint8_t* day, uint8_t* month, uint8_t* year, uint8_t* weekday){
-	i2c_init();
 	i2c_start(I2C_WRITE_ADDRESS);			//reset of transmission
 	/*if(TWSR != 0x18) {                    
 		clock not work
@@ -40,9 +42,7 @@ void readClock(uint8_t* sec, uint8_t* min, uint8_t* hour, uint8_t* day, uint8_t*
 }
 
 
-void writeClock(uint8_t min, uint8_t hour, uint8_t day, uint8_t month, uint8_t year, uint8_t weekday) {
-	
-	i2c_init();                  
+void writeClock(uint8_t min, uint8_t hour, uint8_t day, uint8_t month, uint8_t year, uint8_t weekday) {               
 	i2c_start(I2C_WRITE_ADDRESS);
 	/*if(TWSR != 0x18) {             
 		clock not work
