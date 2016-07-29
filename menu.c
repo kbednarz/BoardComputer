@@ -5,6 +5,7 @@
 #include "lib/lcd/hd44780.h"
 #include "clock.h"
 #include "adc.h"
+#include "tachometer.h"
 
 void prepareMenu(){	
 	mainMenuList = (MenuItem*)malloc(sizeof(MenuItem));		//circular list
@@ -21,9 +22,14 @@ void prepareMenu(){
 	menu2->id = 2;
 	menu2->delayBetweenRefreshInMillis = 1000;
 	
+	MenuItem* menu3 = (MenuItem*)malloc(sizeof(MenuItem));
+	menu3->id = 3;
+	menu3->delayBetweenRefreshInMillis = 500;
+		
 	menu0->nextMenu = menu1;	
 	menu1->nextMenu = menu2;	
-	menu2->nextMenu = menu0;	
+	menu2->nextMenu = menu3;	
+	menu3->nextMenu = menu0;	
 	mainMenuList = menu0;
 }
 
@@ -55,6 +61,15 @@ void printTitles(int id){
 			lcd_clrscr();
 			lcd_goto(0x00);
 			lcd_puts(title1);		
+			break;
+		case 3:
+			lcd_clrscr();
+			lcd_goto(0x00);
+			sprintf(title1, "RPS: %u", rps);
+			lcd_puts(title1);
+			lcd_goto(0x40);
+			sprintf(title2, "RPM: %u", rpm);
+			lcd_puts(title2);
 			break;
 	}
 	

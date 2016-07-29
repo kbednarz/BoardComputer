@@ -1,16 +1,15 @@
-#ifndef F_CPU
-#define F_CPU 1000000UL
-#endif
-
+/*** Clock freq. 1MHz ***/
 
 #include <avr/io.h>
 #include <util/delay.h>
 #include <stdio.h>
+#include <avr/interrupt.h>
 #include "lib/lcd/hd44780.h"
 #include "menu.h"
 #include "buttons_controller.h"
 #include "clock.h"
 #include "adc.h"
+#include "tachometer.h"
 
 int main(void)
 {
@@ -21,8 +20,10 @@ int main(void)
 	initClock();
 	writeClock(11,22,2,4,16,1);
 	initAdc();
+	initTacho();
 	prepareButtons();
 	prepareMenu();
+	
 	printTitles(mainMenuList->id);
 	int status, delay10ms=0;
 	while (1)
@@ -48,5 +49,18 @@ int main(void)
 		}
 		
 	}
+}
+
+//Interrupts for tachometer
+ISR(INT0_vect) 
+{
+	rps_counter++;
+}
+
+ISR(TIMER1_COMPA_vect)
+{
+	rps=rps_counter;
+	rpm=rps*30;
+	rps_counter=0;
 }
 

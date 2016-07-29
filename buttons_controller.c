@@ -1,13 +1,9 @@
-#ifndef F_CPU
-#define F_CPU 1000000UL
-#endif
-
 #include <avr/io.h>
 #include <util/delay.h>
 #include "buttons_controller.h"
 
 void prepareButtons(){
-	DDRD  &= ~(1<<BUTTON1); //output
+	DDRD  &= ~(1<<BUTTON1); //set as input
 	PORTD |=  (1<<BUTTON1); //pull up resistor
 };
 

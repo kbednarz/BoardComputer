@@ -1,9 +1,3 @@
-/*
- * clock.c
- *
- * Created: 2016-07-26 20:27:35
- *  Author: Kamil
- */ 
 #include <avr/io.h>
 #include "lib/i2c/i2c_master.h"
 #include <util/twi.h>
