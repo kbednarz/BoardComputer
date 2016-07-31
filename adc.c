@@ -15,8 +15,9 @@ float measureADC(){
 	float volt;
 	ADCSRA |= (1<<ADSC); //start convertion 
 	while(ADCSRA & (1<<ADSC)); //wait for finish
-	float vref = 4.83;
-	volt = ADC * vref / 1024;
+	const float vref = 4.83,
+				volt_divider_factor = 3.64;
+	volt = (ADC * vref / 1024)*volt_divider_factor;
 	
 	return volt;
 }

@@ -24,26 +24,24 @@ int main(void)
 	prepareButtons();
 	prepareMenu();
 	
-	printTitles(mainMenuList->id);
 	int status, delay10ms=0;
 	while (1)
 	{
 		status = isClickedShortOrLong();
 		if(status == 1){		//if pressed short
-			mainMenuList = mainMenuList->nextMenu;
-			printTitles(mainMenuList->id);
+			mainMenuItem = mainMenuItem->nextMenu;
+			mainMenuItem->callFunction();
 		} else if(status == 2)
 		{	
 			lcd_clrscr();
 			lcd_goto(0x00);
 			lcd_puts("LONG");
-		} 
-		else if(mainMenuList->delayBetweenRefreshInMillis >=0){
-			if(delay10ms <= (mainMenuList->delayBetweenRefreshInMillis)/10) {
+		} else if(mainMenuItem->delayBetweenRefreshInMillis >=0){
+			if(delay10ms <= (mainMenuItem->delayBetweenRefreshInMillis)/10) {
 				delay10ms++;
 				_delay_ms(10);
 			} else{
-				printTitles(mainMenuList->id);
+				mainMenuItem->callFunction();
 				delay10ms=0;
 			}
 		}
