@@ -13,7 +13,7 @@ int isClickedShortOrLong(){			//1-shortly 2-longly
 		return 0;
 	}
 	int clickTimeCounter=0;
-	while(!(PIND & (1<<BUTTON1)) && (clickTimeCounter < 12)){
+	while(!(PIND & (1<<BUTTON1)) && (clickTimeCounter < 20)){
 		_delay_ms(20);
 		clickTimeCounter++;
 	}

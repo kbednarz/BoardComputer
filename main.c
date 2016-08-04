@@ -10,19 +10,21 @@
 #include "clock.h"
 #include "adc.h"
 #include "tachometer.h"
+#include "interruptionsController.h"
 
 int main(void)
 {
-	
     lcd_init();
     lcd_clrscr();
-	
+	initInterruptions();
 	initClock();
-	writeClock(11,22,2,4,16,1);
 	initAdc();
 	initTacho();
 	prepareButtons();
 	prepareMenu();
+	
+	welcomingMessage();
+	_delay_ms(1000);
 	
 	int status, delay10ms=0;
 	while (1)
@@ -31,11 +33,14 @@ int main(void)
 		if(status == 1){		//if pressed short
 			mainMenuItem = mainMenuItem->nextMenu;
 			mainMenuItem->callFunction();
+			_delay_ms(500);
 		} else if(status == 2)
 		{	
-			lcd_clrscr();
-			lcd_goto(0x00);
-			lcd_puts("LONG");
+			if( mainMenuItem->subMenu != NULL ){
+				mainMenuItem = mainMenuItem->subMenu;
+				mainMenuItem->callFunction();
+				_delay_ms(500);
+			}
 		} else if(mainMenuItem->delayBetweenRefreshInMillis >=0){
 			if(delay10ms <= (mainMenuItem->delayBetweenRefreshInMillis)/10) {
 				delay10ms++;
@@ -55,9 +60,9 @@ ISR(INT0_vect)
 	rps_counter++;
 }
 
-ISR(TIMER1_COMPA_vect)
+ISR(TIMER1_COMPA_vect)		//interrupt every 500ms
 {
-	rps=rps_counter;
+	rps=rps_counter*2;
 	rpm=rps*30;
 	rps_counter=0;
 }

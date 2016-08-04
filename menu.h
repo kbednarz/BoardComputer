@@ -3,7 +3,6 @@
 
 typedef struct MenuItem
 {
-	int id;
 	char title1row[16];
 	char title2row[16];
 	int delayBetweenRefreshInMillis;		//"-1"-static context, 0-? in millis
@@ -16,9 +15,8 @@ MenuItem* mainMenuItem;
 char title1[16],title2[16];
 
 void prepareMenu();
-void clockView();
 void tachoView();
 void adcView();
-
+void welcomingMessage();
 
 #endif /* MENU_H_ */

@@ -27,11 +27,11 @@ void readClock(uint8_t* sec, uint8_t* min, uint8_t* hour, uint8_t* day, uint8_t*
 	i2c_start(I2C_READ_ADDRESS);                   
 	*sec = bcdToDec(i2c_read_ack());
 	*min = bcdToDec(i2c_read_ack());
-	*hour = i2c_read_ack();
+	*hour = bcdToDec(i2c_read_ack());
 	*weekday = i2c_read_ack();
 	*day = bcdToDec(i2c_read_ack());
-	*month = i2c_read_ack();
-	*year = i2c_read_nack();
+	*month = bcdToDec(i2c_read_ack());
+	*year = bcdToDec(i2c_read_nack());
 	i2c_stop();
 }
 

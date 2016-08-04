@@ -6,29 +6,49 @@
 #include "clock.h"
 #include "adc.h"
 #include "tachometer.h"
+#include "clockViewController.h"
 
 void prepareMenu(){	
 	mainMenuItem = (MenuItem*)malloc(sizeof(MenuItem));		//circular list
 	
-	MenuItem* menu1 = (MenuItem*)malloc(sizeof(MenuItem));
-	menu1->id = 1;
-	menu1->delayBetweenRefreshInMillis = 1000;
-	menu1->callFunction=clockView;
+	MenuItem* clockMenu = (MenuItem*)malloc(sizeof(MenuItem));
+	clockMenu->delayBetweenRefreshInMillis = 1000;
+	clockMenu->callFunction=clockView;	
+		MenuItem* timeSettingsMenu = (MenuItem*)malloc(sizeof(MenuItem));
+		timeSettingsMenu->delayBetweenRefreshInMillis = -1;
+		timeSettingsMenu->callFunction=timeSettings;		
+			MenuItem* setTimeMenu = (MenuItem*)malloc(sizeof(MenuItem));
+			setTimeMenu->delayBetweenRefreshInMillis = -1;
+			setTimeMenu->callFunction=setTime;
+			MenuItem* exitClockMenu = (MenuItem*)malloc(sizeof(MenuItem));
+			exitClockMenu->delayBetweenRefreshInMillis = -1;
+			exitClockMenu->callFunction=exitToClockMenu;
+			
+	MenuItem* adcMenu = (MenuItem*)malloc(sizeof(MenuItem));
+	adcMenu->delayBetweenRefreshInMillis = 1000;
+	adcMenu->callFunction=adcView;
 	
-	MenuItem* menu2 = (MenuItem*)malloc(sizeof(MenuItem));
-	menu2->id = 2;
-	menu2->delayBetweenRefreshInMillis = 1000;
-	menu2->callFunction=adcView;
-	
-	MenuItem* menu3 = (MenuItem*)malloc(sizeof(MenuItem));
-	menu3->id = 3;
-	menu3->delayBetweenRefreshInMillis = 500;
-	menu3->callFunction=tachoView;
+	MenuItem* tachoMenu = (MenuItem*)malloc(sizeof(MenuItem));
+	tachoMenu->delayBetweenRefreshInMillis = 500;
+	tachoMenu->callFunction=tachoView;
 				
-	menu1->nextMenu = menu2;	
-	menu2->nextMenu = menu3;	
-	menu3->nextMenu = menu1;	
-	mainMenuItem = menu1;
+	clockMenu->nextMenu = adcMenu;
+	clockMenu->subMenu = timeSettingsMenu;	
+		timeSettingsMenu->nextMenu = exitClockMenu;
+		timeSettingsMenu->subMenu = setTimeMenu;
+			setTimeMenu->nextMenu = timeSettingsMenu;
+			setTimeMenu->subMenu = NULL;
+		exitClockMenu->nextMenu = timeSettingsMenu;
+		exitClockMenu->subMenu = clockMenu;
+
+
+	adcMenu->nextMenu = tachoMenu;
+	adcMenu->subMenu = NULL;
+		
+	tachoMenu->nextMenu = clockMenu;	
+	tachoMenu->subMenu = NULL;
+	
+	mainMenuItem = clockMenu;
 }
 
 void adcView(){
@@ -40,20 +60,6 @@ void adcView(){
 	lcd_puts(title1);
 }
 
-void clockView(){
-	uint8_t sec,min,hour,day,month,year,weekday;
-	readClock(&sec,&min,&hour,&day,&month,&year,&weekday);
-	sprintf(title1, "%u:%u:%u", sec,min,hour);
-	lcd_clrscr();
-	lcd_goto(0x00);
-	lcd_puts("Godz. ");
-	lcd_puts(title1);
-	lcd_goto(0x40);
-	lcd_puts("Data: ");
-	sprintf(title2, "%u:%u:%u", day,month,year);
-	lcd_puts(title2);
-};
-
 void tachoView(){
 	lcd_clrscr();
 	lcd_goto(0x00);
@@ -64,3 +70,12 @@ void tachoView(){
 	lcd_puts(title2);
 }
 
+void welcomingMessage(){
+	lcd_clrscr();
+	lcd_goto(0x00);
+	sprintf(title1, "Hello rider!");
+	lcd_puts(title1);
+	lcd_goto(0x40);
+	sprintf(title2, "Turn on lights");
+	lcd_puts(title2);
+}
